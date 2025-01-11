@@ -18,6 +18,8 @@
 
 import 'dart:convert';
 
+import 'package:weather_app/features/weather/domain/entites/today_weather.dart';
+
 WeatherModel weatherModelFromJson(String str) => WeatherModel.fromJson(json.decode(str));
 
 String weatherModelToJson(WeatherModel data) => json.encode(data.toJson());
@@ -84,6 +86,11 @@ class WeatherModel {
         "name": name,
         "cod": cod,
     };
+
+      // Conversion from Model to Entity
+  TodayWeather toEntity(String newAnimation) => TodayWeather(city: name ?? "",
+   temperature: main?.tempMax ?? 0.0, weatherMood: weather?[0].main ?? "", 
+   humidity:main?.humidity ?? 0, animationJson: newAnimation);
 }
 
 class Clouds {

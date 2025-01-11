@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weather_app/services/weather_service.dart';
-import 'package:weather_app/weather_model.dart';
+import 'package:weather_app/features/weather/data/models/weather_model.dart';
 
 import 'package:http/http.dart' as http;
  //https://medium.com/flutter-community/flutter-weather-app-using-provider-c168d59af837
@@ -211,6 +211,7 @@ _weatherService.getFourDayForecast(pos);
           ),
         )
         );
+  
   }
 }
 

@@ -2,7 +2,8 @@ class  TodayWeather {
   final String city;
   final double temperature;
   final String weatherMood;
-  final String humidity;
+  final int humidity;
+  final String animationJson;
 
-  TodayWeather({required this.city, required this.temperature, required this.weatherMood, required this.humidity});
+  TodayWeather({required this.city, required this.temperature, required this.weatherMood, required this.humidity,required this.animationJson});
 }

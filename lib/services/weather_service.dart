@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/weather_model.dart';
+import 'package:weather_app/features/weather/data/models/weather_model.dart';
 import 'package:http/http.dart' as http;
 class WeatherService {
    final forecast = "https://api.openweathermap.org/data/2.5/forecast";
