@@ -5,9 +5,9 @@ import 'package:lottie/lottie.dart';
 import 'package:toggle_switch/toggle_switch.dart'; 
 import 'package:weather_app/features/weather/presentation/providers/four_day_forcast_provider.dart';
 import 'package:weather_app/features/weather/presentation/providers/temp_toggler.dart';
-import 'package:weather_app/features/weather/presentation/providers/weather_provider.dart';
-import '../../../../services/weather_service.dart';
+import 'package:weather_app/features/weather/presentation/providers/weather_provider.dart'; 
 import '../providers/city_provider.dart';
+import '../widgets/gradient_colors.dart';
 
 class ScreenWeather extends ConsumerWidget {
   const ScreenWeather({super.key});
