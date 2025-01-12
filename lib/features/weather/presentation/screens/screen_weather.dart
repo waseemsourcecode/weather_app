@@ -5,7 +5,8 @@ import 'package:lottie/lottie.dart';
 import 'package:toggle_switch/toggle_switch.dart'; 
 import 'package:weather_app/features/weather/presentation/providers/four_day_forcast_provider.dart';
 import 'package:weather_app/features/weather/presentation/providers/temp_toggler.dart';
-import 'package:weather_app/features/weather/presentation/providers/weather_provider.dart'; 
+import 'package:weather_app/features/weather/presentation/providers/weather_provider.dart';
+import 'package:weather_app/services/weather_service.dart'; 
 import '../providers/city_provider.dart';
 import '../widgets/gradient_colors.dart';
 
@@ -14,6 +15,7 @@ class ScreenWeather extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    WeatherService().checkPermission();
     return const Scaffold(
       backgroundColor: Color.fromARGB(255, 133, 132, 132),
       body: SafeArea(
@@ -180,7 +182,10 @@ class WeatherView extends ConsumerWidget {
                         //end
                       },
                       error: (err, stack) {
-                        return Text(err.toString());
+                        return const Padding(
+                          padding: EdgeInsets.all(30.0),
+                          child: Text("Please check your connection and phone location permission",textAlign: TextAlign.center, style: TextStyle(fontSize: 20,color: Colors.white)),
+                        );
                       },
                       loading: () => const Center(
                             child: CircularProgressIndicator(),
@@ -229,7 +234,10 @@ class WeatherView extends ConsumerWidget {
                   child: CircularProgressIndicator(),
                 ),
                 error: (error, stackTrace) {
-                  return Text(error.toString());
+               return const Padding(
+                          padding: EdgeInsets.all(30.0),
+                          child: Center(child: Text("",textAlign: TextAlign.center, style: TextStyle( fontSize: 20,color: Colors.white))),
+                        );
                 },
               )),
         ],
@@ -260,17 +268,21 @@ class SearchOverlay extends ConsumerWidget {
         searchItems: searchSuggestion,
         maxElementsToDisplay: searchWatcher.length,
         onItemTap: (index, value) {
-          FocusManager.instance.primaryFocus?.unfocus();
+          if(value.isNotEmpty){
+FocusManager.instance.primaryFocus?.unfocus();
           ref.read(stateWeatherNotifierProvider.notifier).loadWeather(value);
           ref
               .read(stateFourDayWeatherNotifierProvider.notifier)
               .loadFourDayWeather();
+          }
+          
         },
         onSearchClear: () {
           // may be display the full list? or Nothing? it's your call
         },
         onSubmitted: (value, value2) {
-          ref.read(stateCityNotfierProvider.notifier).saveCity(
+          if (value.isNotEmpty){
+ref.read(stateCityNotfierProvider.notifier).saveCity(
               cityName: value,
               tempTypeIndex: 1); //(userName.contains("°F") ? 1 : 0));
           // FocusManager.instance.primaryFocus?.unfocus();
@@ -278,6 +290,8 @@ class SearchOverlay extends ConsumerWidget {
           ref
               .read(stateFourDayWeatherNotifierProvider.notifier)
               .loadFourDayWeather();
+          }
+          
         },
         onEditingProgress: (value, value2) {
           // user is trying to lookup something, may be you want to help him?

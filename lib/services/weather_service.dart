@@ -1,16 +1,19 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart'; 
-class WeatherService {
-   final forecast = "https://api.openweathermap.org/data/2.5/forecast";
-  static const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
-  final String apiKey; 
-  WeatherService({required this.apiKey});
+class WeatherService { 
    
 
 Future<Position> getCurrentLatLng() async {
    Position  position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 return position;
 }
+ void checkPermission()async {
+      LocationPermission permission = await Geolocator
+    .checkPermission();
+    if(permission == LocationPermission.denied){
+      permission = await Geolocator.requestPermission();
+    }
+ }
   Future<String> getCurrentCity() async {
     LocationPermission permission = await Geolocator
     .checkPermission();

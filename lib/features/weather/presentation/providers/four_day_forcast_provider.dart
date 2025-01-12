@@ -30,7 +30,7 @@ class FourDayWeatherNotifier extends StateNotifier<AsyncValue<List<FourDayWeathe
 
   // Load trips from the repository and update the state.
   Future<void> loadFourDayWeather() async {
-     final ser = WeatherService(apiKey: "");
+     final ser = WeatherService();
 //final city = await ser.getCurrentCity();
  state = const AsyncValue.loading();
 final pos = await ser.getCurrentLatLng();
