@@ -46,6 +46,8 @@ dependencies:
   path_provider: ^2.1.1
   dartz: ^0.10.1
   intl: ^0.18.1
+  toggle_switch: ^2.3.0
+  advanced_search: ^2.2.4
 
 dev_dependencies:
   flutter_test:

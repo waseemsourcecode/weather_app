@@ -17,19 +17,16 @@ class LastWeatherConfigAdapter extends TypeAdapter<LastWeatherConfig> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return LastWeatherConfig(
-      city: (fields[0] as List).cast<String>(),
-      tempType: fields[1] as int,
+      city: fields[0] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, LastWeatherConfig obj) {
     writer
-      ..writeByte(2)
-      ..writeByte(0)
-      ..write(obj.city)
       ..writeByte(1)
-      ..write(obj.tempType);
+      ..writeByte(0)
+      ..write(obj.city);
   }
 
   @override

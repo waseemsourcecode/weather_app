@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:weather_app/features/weather/domain/entites/fourday_weather.dart';
+
 FourDayWeatherModel fourDayWeatherModelFromJson(String str) => FourDayWeatherModel.fromJson(json.decode(str));
 
 String fourDayWeatherModelToJson(FourDayWeatherModel data) => json.encode(data.toJson());
@@ -34,6 +36,11 @@ class FourDayWeatherModel {
         "cnt": cnt,
         "list": list == null ? [] : List<dynamic>.from(list!.map((x) => x.toJson())),
     };
+       // Conversion from Model to Entity
+  FourDayWeather toEntity(String newAnimation,int index,String day) => FourDayWeather(
+   temperature: list?[index].main?.tempMax ?? 0.0, weatherMood: list?[index].weather?[0].main ?? "", 
+   humidity:list?[index].main?.humidity ?? 0, animationJson: newAnimation, dayName: day);
+
 }
 
 class ListElement {

@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:weather_app/features/weather/domain/entites/last_weather_config.dart';
-import 'package:weather_app/weather_page.dart';
+ 
 
-import 'features/weather/presentation/providers/screen_weather.dart';
+import 'features/weather/presentation/screens/screen_weather.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

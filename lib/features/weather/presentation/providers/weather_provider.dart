@@ -1,39 +1,13 @@
- 
-import 'package:hive/hive.dart';
-import 'package:weather_app/features/weather/data/datasources/weather_local_datasource.dart'; 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app/features/weather/data/datasources/weather_remote_ds.dart';
-import 'package:weather_app/features/weather/data/repositories/weather_repository_impl.dart';
+ import  'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weather_app/features/weather/domain/entites/today_weather.dart';
-import 'package:weather_app/features/weather/domain/repositories/weather_repository.dart';
-import 'package:weather_app/features/weather/domain/usecases/usecase_add_weather_config.dart';
+import  'package:weather_app/features/weather/domain/usecases/usecase_add_weather_config.dart';
 import 'package:weather_app/features/weather/domain/usecases/usecase_get_weather.dart';
-import   'package:weather_app/services/weather_service.dart'; 
-import '../../domain/entites/last_weather_config.dart';
-
-final weatherLocalDataSourceProvider = Provider<WeatherLocalDatasource>((ref)  {
-  final Box<LastWeatherConfig> lastWeatherConfig = Hive.box('weatherConfigBox');
-     // await Hive.initFlutter();
-  // // Open the peopleBox
-    // final box = await Hive.openBox('weatherBox');
-  return WeatherLocalDatasource(weatherBox: lastWeatherConfig);
-});
-
-final weatherRemoteDataSourceProvider = Provider<WeatherRemoteDataSource>((ref)  {
- 
-  return WeatherRemoteDataSource(apiKey: "7528cbc9b0cc206b9be53780e54e5f1d");
-});
-
-
-final weatherRepositoryProvider = Provider<WeatherRepository>((ref) {
-  final localDataSource = ref.read(weatherLocalDataSourceProvider);
-   final remoteDataSource = ref.read(weatherRemoteDataSourceProvider);
-  return WeatherRepositoryImpl(localDataSource: localDataSource, remoteDataSource: remoteDataSource);
-});
+import   'package:weather_app/services/weather_service.dart';  
+import 'weather_repo_provider.dart';
 
  
 
-final getWeatherProvider = Provider<UsecaseGetWeather>((ref) {
+final getWeatherProvider = FutureProvider<UsecaseGetWeather>((ref) {
   final repository = ref.read(weatherRepositoryProvider);
   return UsecaseGetWeather(repository: repository);
 });
@@ -45,24 +19,40 @@ final addWeatherConfigProvider = Provider<UsecaseAddWeatherConfig>((ref) {
 
   
 // This provider will manage fetching trips from the repository.
-final stateWeatherNotifierProvider = StateNotifierProvider<WeatherNotifier, TodayWeather?>((ref) {
+final stateWeatherNotifierProvider = StateNotifierProvider<WeatherNotifier,AsyncValue<TodayWeather?>>((ref) {
+ 
   final getWeather = ref.read(getWeatherProvider);
-  return WeatherNotifier(getWeather);
+  return WeatherNotifier( getWeather);
 });
 //final welcomeProvider = Provider((ref) => 'Welcome to Riverpod');
 
-class WeatherNotifier extends StateNotifier<TodayWeather?> {
-  final UsecaseGetWeather _getWeather;
+class WeatherNotifier extends StateNotifier<AsyncValue<TodayWeather?>> {
+  final AsyncValue<UsecaseGetWeather> _getWeather;
   
-  WeatherNotifier(this._getWeather) : super(null);
+  WeatherNotifier(this._getWeather) : super(const AsyncValue.data(null));
 
   // Load trips from the repository and update the state.
   Future<void> loadWeather(String city) async {
-    final ser = WeatherService(apiKey: "");
+     final ser = WeatherService(apiKey: "");
 //final city = await ser.getCurrentCity();
+ state = const AsyncValue.loading();
 final pos = await ser.getCurrentLatLng();
-    final tripsOrFailure = await _getWeather(city: city,pos: pos);
-    tripsOrFailure.fold((error) => state = null, (trips) => state = trips);
+   
+    try {
+      final data = await _getWeather.value?.call(city: city, pos: pos);
+      data!.fold((error){
+        state = AsyncValue.error(error,StackTrace.fromString("Failed to fetch weather"));
+      }, (fineData){
+        state = AsyncData(fineData);
+      });
+     // state = AsyncValue.data(data!.getOrElse(dflt));
+    } catch (e) {
+      state = AsyncValue.error(e,StackTrace.fromString("Failed to fetch weather"));
+    }
+   
+    // final tripsOrFailure = await  _getWeather(city: city,pos: pos);
+    // tripsOrFailure.fold((error) => state = const AsyncValue.data(null), (trips) => state = trips as AsyncValue<TodayWeather?>);
+ 
   }
  
 }
